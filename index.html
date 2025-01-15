@@ -37,6 +37,12 @@
         <button id="generateButton" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate</button>
         <button id="copyButton" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Copy</button>
       </div>
+
+      <!-- Preview Section -->
+      <div id="previewSection" class="mt-6 p-4 border border-gray-300 rounded-md bg-gray-50">
+        <h3 class="text-lg font-semibold mb-4">Preview</h3>
+        <div id="preview" class="p-4 bg-gray-100 rounded-md"></div>
+      </div>
     </div>
   </main>
 
@@ -55,27 +61,39 @@
     const outputEditor = document.getElementById('outputEditor');
     const generateButton = document.getElementById('generateButton');
     const copyButton = document.getElementById('copyButton');
+    const preview = document.getElementById('preview');
 
-    // Function to transform Tailwind HTML into skeleton loading
-    function transformToSkeleton(html) {
-      // Add the animate-pulse class and modify elements
-      return html
-        .replace(/class="([^"]*)"/g, 'class="$1 animate-pulse bg-gray-300"') // Add pulse animation and gray background
-        .replace(/<(\w+)(.*?)>(.*?)<\/\1>/g, (match, tag, attrs) => {
-          // Replace text elements with divs for proper skeleton loading
-          if (['p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tag)) {
-            return `<div${attrs} class="w-full h-4 bg-gray-300 rounded-md animate-pulse"></div>`;
+    // Helper function to wrap text elements dynamically
+    function wrapTextElements(html) {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+
+      // Recursively process child elements
+      function processElement(element) {
+        Array.from(element.children).forEach((child) => {
+          if (child.children.length > 0) {
+            processElement(child); // Process nested elements
+          } else if (['P', 'SPAN', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(child.tagName)) {
+            // Replace text elements with skeleton placeholders
+            child.innerHTML = '';
+            child.classList.add('bg-gray-300', 'animate-pulse', 'rounded-md');
+            child.style.width = '100%';
+            child.style.height = '1rem';
           }
-          return match;
         });
+      }
+
+      processElement(tempDiv);
+      return tempDiv.innerHTML;
     }
 
     // Generate skeleton loading
     generateButton.addEventListener('click', () => {
       const inputHTML = inputEditor.value.trim();
       if (inputHTML) {
-        const skeletonHTML = transformToSkeleton(inputHTML);
+        const skeletonHTML = wrapTextElements(inputHTML);
         outputEditor.value = skeletonHTML;
+        preview.innerHTML = skeletonHTML; // Update the live preview
       } else {
         alert('Please enter Tailwind HTML code!');
       }
