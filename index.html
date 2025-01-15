@@ -58,10 +58,16 @@
 
     // Function to transform Tailwind HTML into skeleton loading
     function transformToSkeleton(html) {
+      // Add the animate-pulse class and modify elements
       return html
-        .replace(/bg-\w+-\d+/g, 'bg-gray-300 animate-pulse') // Replace background colors
-        .replace(/text-\w+-\d+/g, 'text-transparent')        // Replace text color with transparent
-        .replace(/shadow-\w+/g, '');                        // Remove shadows
+        .replace(/class="([^"]*)"/g, 'class="$1 animate-pulse bg-gray-300"') // Add pulse animation and gray background
+        .replace(/<(\w+)(.*?)>(.*?)<\/\1>/g, (match, tag, attrs) => {
+          // Replace text elements with divs for proper skeleton loading
+          if (['p', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tag)) {
+            return `<div${attrs} class="w-full h-4 bg-gray-300 rounded-md animate-pulse"></div>`;
+          }
+          return match;
+        });
     }
 
     // Generate skeleton loading
