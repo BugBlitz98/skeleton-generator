@@ -63,27 +63,25 @@
     const generateButton = document.getElementById('generateButton');
     const copyButton = document.getElementById('copyButton');
 
-    // Helper function to generate skeleton loading with exact width and height
     function generateSkeletonHTML(html) {
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html;
 
-      // Recursively process each child element
       function processElement(element) {
         Array.from(element.children).forEach((child) => {
           const computedStyle = window.getComputedStyle(child);
 
-          // Get width, height, and other properties
-          const width = computedStyle.width;
-          const height = computedStyle.height;
-          const margin = computedStyle.margin;
-          const padding = computedStyle.padding;
+          const width = computedStyle.width || '100%';
+          const height = computedStyle.height || '1rem';
+          const margin = computedStyle.margin || '0px';
+          const padding = computedStyle.padding || '0px';
 
           if (child.children.length > 0) {
-            processElement(child); // Process nested children
+            processElement(child); // Recursively process children
           } else {
-            child.innerHTML = ''; // Clear the content
-            child.className = ''; // Remove original classes
+            // Replace text with skeleton
+            child.innerHTML = '';
+            child.className = '';
             child.classList.add('bg-gray-300', 'animate-pulse', 'rounded-md');
             child.style.width = width;
             child.style.height = height;
@@ -97,19 +95,17 @@
       return tempDiv.innerHTML;
     }
 
-    // Generate skeleton loading
     generateButton.addEventListener('click', () => {
       const inputHTML = inputEditor.value.trim();
       if (inputHTML) {
         const skeletonHTML = generateSkeletonHTML(inputHTML);
         outputEditor.value = skeletonHTML;
-        preview.innerHTML = skeletonHTML; // Render live preview
+        preview.innerHTML = skeletonHTML; // Show preview
       } else {
         alert('Please enter Tailwind HTML code!');
       }
     });
 
-    // Copy to clipboard
     copyButton.addEventListener('click', () => {
       const outputHTML = outputEditor.value.trim();
       if (outputHTML) {
