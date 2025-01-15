@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tailwind Skeleton Loading Tool</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+  <div class="bg-white shadow-md rounded-md p-6 w-full max-w-5xl space-y-6">
+    <h1 class="text-2xl font-bold text-center">Tailwind to Skeleton Loader</h1>
+    
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Input Editor -->
+      <div>
+        <h2 class="text-lg font-semibold">Input HTML</h2>
+        <textarea id="inputEditor" class="w-full h-64 border border-gray-300 rounded-md p-3 text-sm font-mono" placeholder="Paste your Tailwind HTML here..."></textarea>
+      </div>
+      
+      <!-- Output Editor -->
+      <div>
+        <h2 class="text-lg font-semibold">Skeleton Loading Output</h2>
+        <textarea id="outputEditor" class="w-full h-64 border border-gray-300 rounded-md p-3 text-sm font-mono" placeholder="Skeleton loading output will appear here..." readonly></textarea>
+      </div>
+    </div>
+
+    <div class="flex justify-between">
+      <button id="generateButton" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Generate</button>
+      <button id="copyButton" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">Copy</button>
+    </div>
+  </div>
+
+  <script>
+    const inputEditor = document.getElementById('inputEditor');
+    const outputEditor = document.getElementById('outputEditor');
+    const generateButton = document.getElementById('generateButton');
+    const copyButton = document.getElementById('copyButton');
+
+    // Function to transform Tailwind HTML into skeleton loading
+    function transformToSkeleton(html) {
+      return html
+        .replace(/bg-\w+-\d+/g, 'bg-gray-300 animate-pulse') // Replace background colors
+        .replace(/text-\w+-\d+/g, 'text-transparent')        // Replace text color with transparent
+        .replace(/shadow-\w+/g, '');                        // Remove shadows
+    }
+
+    // Generate skeleton loading
+    generateButton.addEventListener('click', () => {
+      const inputHTML = inputEditor.value.trim();
+      if (inputHTML) {
+        const skeletonHTML = transformToSkeleton(inputHTML);
+        outputEditor.value = skeletonHTML;
+      } else {
+        alert('Please enter Tailwind HTML code!');
+      }
+    });
+
+    // Copy to clipboard
+    copyButton.addEventListener('click', () => {
+      const outputHTML = outputEditor.value.trim();
+      if (outputHTML) {
+        navigator.clipboard.writeText(outputHTML).then(() => {
+          alert('Skeleton loading code copied to clipboard!');
+        });
+      } else {
+        alert('No output to copy!');
+      }
+    });
+  </script>
+</body>
+</html>
