@@ -73,20 +73,25 @@
 
           const width = computedStyle.width || '100%';
           const height = computedStyle.height || '1rem';
+          const display = computedStyle.display || 'block';
           const margin = computedStyle.margin || '0px';
           const padding = computedStyle.padding || '0px';
+          const borderRadius = computedStyle.borderRadius || '0px';
+
+          child.innerHTML = ''; // Clear child content
+          child.className = ''; // Remove all original classes
+          child.classList.add('bg-gray-300', 'animate-pulse'); // Add skeleton classes
+
+          // Set necessary styles
+          child.style.width = width;
+          child.style.height = height;
+          child.style.margin = margin;
+          child.style.padding = padding;
+          child.style.borderRadius = borderRadius;
+          child.style.display = display;
 
           if (child.children.length > 0) {
-            processElement(child); // Recursively process children
-          } else {
-            // Replace text with skeleton
-            child.innerHTML = '';
-            child.className = '';
-            child.classList.add('bg-gray-300', 'animate-pulse', 'rounded-md');
-            child.style.width = width;
-            child.style.height = height;
-            child.style.margin = margin;
-            child.style.padding = padding;
+            processElement(child); // Process children recursively
           }
         });
       }
@@ -100,7 +105,7 @@
       if (inputHTML) {
         const skeletonHTML = generateSkeletonHTML(inputHTML);
         outputEditor.value = skeletonHTML;
-        preview.innerHTML = skeletonHTML; // Show preview
+        preview.innerHTML = skeletonHTML; // Render preview
       } else {
         alert('Please enter Tailwind HTML code!');
       }
